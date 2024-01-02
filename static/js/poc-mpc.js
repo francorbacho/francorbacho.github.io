@@ -77,12 +77,12 @@ function draw(car) {
 
     ctx.fillStyle = "blue";
     ctx.beginPath();
-    ctx.arc(spline[car.spline_index].x, spline[car.spline_index].y, CURSOR_RADIUS, 0.0, TWO_PI, false);
+    ctx.arc(spline[car.splineIndex].x, spline[car.splineIndex].y, CURSOR_RADIUS, 0.0, TWO_PI, false);
     ctx.closePath();
     ctx.fill();
 }
 
-function draw_spline(spline) {
+function drawSpline(spline) {
     ctx.strokeStyle = "rgb(250, 200, 80)";
     ctx.beginPath();
 
@@ -114,7 +114,7 @@ function frame(car, mpc) {
     }
 
     draw(car);
-    draw_spline(spline);
+    drawSpline(spline);
 
     document.getElementById("table-x").textContent = fmtNumber(car.x);
     document.getElementById("table-y").textContent = fmtNumber(car.y);
@@ -136,7 +136,7 @@ function resetCarState() {
         y: 75.0,
         speed: 0.0,
         yaw: 0.0,
-        spline_index: 15,
+        splineIndex: 15,
 
         /* Point mass */
         update: function(cmd) {
@@ -151,11 +151,11 @@ function resetCarState() {
 
             maintainInBounds(this);
 
-            const target = spline[this.spline_index];
+            const target = spline[this.splineIndex];
             const dist = (target.x - this.x) ** 2 + (target.y - this.y) ** 2;
             if (dist < 1500)
-                this.spline_index = (this.spline_index + 1) % spline.length;
-            document.getElementById("table-debug").textContent = fmtNumber(this.spline_index);
+                this.splineIndex = (this.splineIndex + 1) % spline.length;
+            document.getElementById("table-debug").textContent = fmtNumber(this.splineIndex);
         },
 
         clone: function() {
@@ -189,7 +189,7 @@ window.addEventListener("load", () => {
         tries: 25,
 
         calculateCostFor: function(car) {
-            const target = spline[car.spline_index];
+            const target = spline[car.splineIndex];
             // const correctPositionCost = 1.0 / (
             //     Math.exp(-Math.abs(target.x - car.x)) +
             //     Math.exp(-Math.abs(target.y - car.y))
@@ -215,14 +215,14 @@ window.addEventListener("load", () => {
             function tryCmd(cmd) {
                 let car = car_.clone();
                 let cost = Infinity;
-                let previousSplineIdx = car.spline_index;
+                let previousSplineIdx = car.splineIndex;
 
                 for (let j = 0; j < horizon; j++) {
                     car.update(cmd);
                     cost = Math.min(cost, calculateCostFor(car));
                 }
 
-                let doesCmdAdvanceSpline = previousSplineIdx != car.spline_index;
+                let doesCmdAdvanceSpline = previousSplineIdx != car.splineIndex;
 
                 if (bestCostSoFar > cost || (doesCmdAdvanceSpline && !doesBestCmdAdvanceSpline)) {
                     bestCostSoFar = cost;
@@ -295,6 +295,7 @@ function setTrackToRing() {
         spline.push({ x: START_X + Math.cos(v) * WIDTH, y: START_Y + Math.sin(v) * HEIGHT });
     }
 }
+
 function loop(dt) {
     frame(car, mpc);
     requestAnimationFrame(loop);
