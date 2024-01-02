@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>francorbacho's blog</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="canonical" href="{{ .Permalink }}" />
+    <link rel="icon" type="image/png" href="{{ .Site.BaseURL }}icons/favicon-32x32.png" />
+</head>
+
+<body>
+    <a href="/">francorbacho.github.io</a>
+    <span> &#8212; </span>
+    <span>{{ .Title }}</span>
+
+    <hr class="hidden">
+    <div id="menu">
+        <a href="/">home</a>
+        <a href="/poc-mpc">poc mpc</a>
+    </div>
+    <hr class="hidden">
+
+    {{ block "main" . }} oops! fallback content {{ end }}
+
+    <footer>
+        <div class="center">&mdash; § &mdash;</div>
+
+        Copyright &copy; 2024 <a href="mailto:francorbacho@proton.me">francorbacho</a>
+        <br />
+        Content on this site is licensed under
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>,
+        unless stated otherwise.
+        The code is
+        <a href="https://opensource.org/licenses/ISC">ISC</a>.
+    </footer>
+</body>
+</html>

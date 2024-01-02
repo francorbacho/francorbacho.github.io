@@ -1,0 +1,24 @@
+{{ define "main" }}
+
+<header>
+  <h1>{{ .Title }}</h1>
+  <small>
+    <span class="site"><a href="{{.Site.BaseURL}}">{{ .Site.Title }}</a></span>
+  </small>
+</header>
+
+<section class="article-list">
+  <a class="article-link" href="{{ .Permalink }}">
+    <div class="title">{{ .Title }}</div>
+    <time datetime="{{.Date.Format "2006-01-02"}}">
+      {{ .Date.Format "2006-01-02" }}
+
+      {{ range .Params.tags }}
+      <span class="tags">#{{ . }}</span>
+      {{ end }}
+    </time>
+  </a>
+  {{ end }}
+</section>
+
+{{ end }}

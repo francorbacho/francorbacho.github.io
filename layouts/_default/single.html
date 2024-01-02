@@ -1,0 +1,9 @@
+{{ define "main" }}
+
+<article>
+  {{- with .Content -}}
+    {{ . | replaceRE "(<h[1-9] id=\"([^\"]+)\".+)(</h[1-9]+>)" `<a href="#${2}">${1} <span>¶</span></a>${3}` | safeHTML }}
+  {{- end -}}
+</article>
+
+{{ end }}

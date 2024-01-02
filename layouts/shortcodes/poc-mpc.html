@@ -1,0 +1,43 @@
+<div style="width: 100%">
+    <canvas id="mpc" style="border: 1px solid black; width: 100%; height: 100%" width="850" height="350"></canvas>
+    <noscript>
+        <div class="nojs-canvas">
+            You need JS to run this.
+        </div>
+    </noscript>
+    <script src="/js/poc-mpc.js"></script>
+
+    <div style="width: 100%; display: flex; justify-content: center;">
+        <button style="margin: 10px;" onclick="step()">Step</button>
+        <button style="margin: 10px;" onclick="stopSimulation = !stopSimulation">Stop</button>
+        <select id="track-select" name="track" style="margin: 10px">
+            <option value="ring">Ring</option>
+            <option value="acceleration">Acceleration</option>
+        </select>
+    </div>
+
+    <table class="mpc-table" style="width: 100%; table-layout: fixed;">
+        <tbody>
+            <tr>
+                <th>Debug</th>
+                <th>Cost</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Speed</th>
+                <th>Yaw</th>
+                <th>Acceleration</th>
+                <th>Steering</th>
+            </tr>
+            <tr>
+                <td id="table-debug">placeholder</th>
+                <td id="table-cost">placeholder</th>
+                <td id="table-x">placeholder</th>
+                <td id="table-y">placeholder</th>
+                <td id="table-speed">placeholder</th>
+                <td id="table-yaw">placeholder</th>
+                <td id="table-acceleration">placeholder</th>
+                <td id="table-steering">placeholder</th>
+            </tr>
+        </tbody>
+    </table>
+</div>
