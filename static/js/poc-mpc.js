@@ -13,6 +13,7 @@ const TWO_PI = PI * 2.0;
 
 const DT = 0.1;
 
+let followMouse = false;
 let stopSimulation = false;
 
 function randomInRange(min, max) {
@@ -189,7 +190,7 @@ window.addEventListener("load", () => {
         tries: 25,
 
         calculateCostFor: function(car) {
-            const target = spline[car.splineIndex];
+            const target = followMouse ? { x: targetX, y: targetY } : spline[car.splineIndex];
             // const correctPositionCost = 1.0 / (
             //     Math.exp(-Math.abs(target.x - car.x)) +
             //     Math.exp(-Math.abs(target.y - car.y))
@@ -299,4 +300,24 @@ function setTrackToRing() {
 function loop(dt) {
     frame(car, mpc);
     requestAnimationFrame(loop);
+}
+
+function toggleSimulation() {
+    const toggle = document.getElementById("toggle-simulation");
+    stopSimulation = !stopSimulation;
+
+    if (stopSimulation)
+        toggle.innerHTML = "Play";
+    else
+        toggle.innerHTML = "Stop";
+}
+
+function toggleFollowMouse() {
+    const toggle = document.getElementById("toggle-follow-mouse");
+    followMouse = !followMouse;
+
+    if (followMouse)
+        toggle.innerHTML = "Follow Spline";
+    else
+        toggle.innerHTML = "Follow Mouse";
 }

@@ -9,7 +9,8 @@
 
     <div style="width: 100%; display: flex; justify-content: center;">
         <button style="margin: 10px;" onclick="step()">Step</button>
-        <button style="margin: 10px;" onclick="stopSimulation = !stopSimulation">Stop</button>
+        <button style="margin: 10px;" id="toggle-simulation" onclick="toggleSimulation()">Stop</button>
+        <button style="margin: 10px;" id="toggle-follow-mouse" onclick="toggleFollowMouse()">Follow Mouse</button>
         <select id="track-select" name="track" style="margin: 10px">
             <option value="ring">Ring</option>
             <option value="acceleration">Acceleration</option>
