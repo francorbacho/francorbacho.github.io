@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>francorbacho's blog</title>
+<link rel=stylesheet href=/css/style.css><link rel=canonical href=https://francorbacho.github.io/poc-mpc/><link rel=icon type=image/png href=https://francorbacho.github.io/icons/favicon-32x32.png></head><body><a href=/>francorbacho.github.io</a>
+<span>&#8212; </span><span>Proof of Concept MPC</span><hr class=hidden><div id=menu><a href=/>home</a>
+<a href=/poc-mpc>poc mpc</a></div><hr class=hidden><article><p>Hello there! This is my attempt at creating a basic MPC. It&rsquo;s not perfect, and
+sometimes it may get stuck, but the fundamental concept is there. Each frame, it
+predicts what set of inputs minimize the cost function.</p><p>These inputs consist of a set of randomly generated pairs, as well as some basic
+pairs that are commonly good (accelerate w/o steering, accelerate left, accelerate
+right, etc&mldr;).</p><div style=width:100%><canvas id=mpc style="border:1px solid #000;width:100%;height:100%" width=850 height=350></canvas><noscript><div class=nojs-canvas>You need JS to run this.</div></noscript><script src=/js/poc-mpc.js></script><div style=width:100%;display:flex;justify-content:center><button style=margin:10px onclick=step()>Step</button>
+<button style=margin:10px id=toggle-simulation onclick=toggleSimulation()>Stop</button>
+<button style=margin:10px id=toggle-follow-mouse onclick=toggleFollowMouse()>Follow Mouse</button>
+<select id=track-select name=track style=margin:10px><option value=ring>Ring</option><option value=acceleration>Acceleration</option></select></div><table class=mpc-table style=width:100%;table-layout:fixed><tbody><tr><th>Debug</th><th>Cost</th><th>X</th><th>Y</th><th>Speed</th><th>Yaw</th><th>Acceleration</th><th>Steering</th></tr><tr><td id=table-debug>placeholder</th><td id=table-cost>placeholder</th><td id=table-x>placeholder</th><td id=table-y>placeholder</th><td id=table-speed>placeholder</th><td id=table-yaw>placeholder</th><td id=table-acceleration>placeholder</th><td id=table-steering>placeholder</th></tr></tbody></table></div></article><footer><div class=center>&mdash; § &mdash;</div>Copyright &copy; 2024 <a href=mailto:francorbacho@proton.me>francorbacho</a><br>Content on this site is licensed under
+<a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>,
+unless stated otherwise.
+The code is
+<a href=https://opensource.org/licenses/ISC>ISC</a>.</footer></body></html>
