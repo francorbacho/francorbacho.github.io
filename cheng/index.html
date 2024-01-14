@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chess Board</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/chessboard.css">
+
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="stupid bad chess engine" />
+</head>
+
+<body>
+    <script src="js/chessboard.js"></script>
+    <script src="js/load_wasm.js" type="module"></script>
+
+    <div id="chess" class="chess-interface">
+        <chessboard id="chessboard" draggable="false">Enable JavaScript to play</chessboard>
+     </div>
+
+    <div id="settings">
+        <select name="players" id="player-select">
+            <option value="human-human">Human vs. Human</option>
+            <option value="human-computer" selected="selected">Human vs. Computer</option>
+            <option value="computer-human">Computer vs. Human</option>
+            <option value="computer-computer">Computer vs. Computer</option>
+        </select>
+
+        <input type="text" id="fen" placeholder="fen">
+    </div>
+</body>
+
+</html>
