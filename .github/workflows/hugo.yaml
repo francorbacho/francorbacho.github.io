@@ -58,7 +58,8 @@ jobs:
             git config user.email github-actions[bot]@users.noreply.github.com
             commit=$(git rev-parse HEAD)
             git checkout gh-pages
-            mv public/* .
+            cp -a public/* .
+            rm -rf public
             git add .
             git commit -m "deploy $commit"
             git push
