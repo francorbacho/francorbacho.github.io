@@ -4,8 +4,8 @@ class Chessboard {
         this.squares = {};
         this.draggingPiece = null;
         this.playerConfiguration = {
-            white: "human",
-            black: "computer",
+            white: new PlayerConfiguration("white", "human", document.getElementById("player-select-white"), document.getElementById("white-endpoint")),
+            black: new PlayerConfiguration("black", "wasm", document.getElementById("player-select-black"), document.getElementById("black-endpoint")),
         };
 
         this.worker = new Worker("js/worker.js", { type: "module" });
@@ -62,7 +62,7 @@ class Chessboard {
 
         this.constructPieces();
         this.updateCheckIndicator();
-        this.unsetPreviousModeIndicator();
+        this.unsetPreviousMoveIndicator();
         this.updateFenInputBox();
     }
 
@@ -103,7 +103,7 @@ class Chessboard {
             return;
         }
 
-        if (this.playerConfiguration[pieceSide] == "computer") {
+        if (!this.playerConfiguration[pieceSide].allowDrag()) {
             return;
         }
 
@@ -219,7 +219,9 @@ class Chessboard {
 
     feedMove(movement) {
         this.feedMoveWithoutScheduling(movement);
-        setTimeout(() => this.scheduleComputerMove(), 500);
+        const board = this;
+
+        setTimeout(() => this.scheduleMove(), 500);
     }
 
     updateFenInputBox() {
@@ -247,7 +249,7 @@ class Chessboard {
     }
 
 
-    unsetPreviousModeIndicator() {
+    unsetPreviousMoveIndicator() {
         const lastMoveSquareElement = document.querySelectorAll("square.last-move");
 
         for (const squareElement of lastMoveSquareElement) {
@@ -256,7 +258,7 @@ class Chessboard {
     }
 
     updatePreviousMoveIndicator(newMoveOrigin, newMoveDestination) {
-        this.unsetPreviousModeIndicator();
+        this.unsetPreviousMoveIndicator();
 
         const originSquareElement = document.querySelector(`square[position=${newMoveOrigin}]`);
         const destSquareElement = document.querySelector(`square[position=${newMoveDestination}]`);
@@ -265,18 +267,76 @@ class Chessboard {
         destSquareElement.classList.add("last-move");
     }
 
-    scheduleComputerMove() {
-        if (this.playerConfiguration[wasm.getSideToMove()] != "computer") {
+    scheduleMove() {
+        if (this.playerConfiguration[wasm.getSideToMove()].kind === "wasm") {
+            this.worker.postMessage({ inputData: wasm.boardToFen() });
             return;
         }
 
-        this.worker.postMessage({ inputData: wasm.boardToFen() });
+        if (this.playerConfiguration[wasm.getSideToMove()].kind === "endpoint") {
+            const endpoint = this.playerConfiguration[wasm.getSideToMove()].endpoint();
+            if (endpoint === null) {
+                console.error("Cannot request endpoint cause endpoint is null");
+                return;
+            }
+
+            const fen = wasm.boardToFen().replaceAll("/", "_").replaceAll(" ", "+");
+            const url = `${endpoint}?fen=${fen}`;
+
+            fetch(url)
+                .then(resp => resp.json())
+                .then(j => {
+                    mainBoard.feedMove(j.movement);
+                });
+        }
     }
 }
 
-const mainBoard = new Chessboard("chessboard");
+class PlayerConfiguration {
+    constructor(color, kind, selectElement, endpointTextElement) {
+        this.color = color;
+        this.kind = kind;
+        this.selectElement = selectElement;
+        this.endpointTextElement = endpointTextElement;
+
+        this.selectElement.value = kind;
+
+        const playerConf = this;
+        this.selectElement.addEventListener("change", function () {
+            playerConf.kind = playerConf.selectElement.value;
+            playerConf.syncEnabledState();
+            mainBoard.scheduleMove();
+        });
+
+        // FIXME: We should have a reference to the board, instead of using the
+        //        global one...
+        this.endpointTextElement.addEventListener("change", function() {
+            mainBoard.scheduleMove();
+        });
+
+        this.syncEnabledState();
+    }
+
+    allowDrag() {
+        return this.kind === "human";
+    }
+
+    endpoint() {
+        return this.endpointTextElement.value;
+    }
+
+    syncEnabledState() {
+        if (this.kind === "endpoint") {
+            this.endpointTextElement.disabled = false;
+        } else {
+            this.endpointTextElement.disabled = true;
+        }
+    }
+}
 
 window.onload = function () {
+    window.mainBoard = new Chessboard("chessboard");
+
     const boardFrame = document.getElementById(mainBoard.boardFrameId);
     boardFrame.textContent = "Waiting for WebAssembly to load...";
 
@@ -284,18 +344,6 @@ window.onload = function () {
         if (typeof wasm == "undefined")
             boardFrame.textContent = "Failed to load WebAssembly.";
     }, 2_000);
-
-    const playerSettings = document.getElementById("player-select")
-    playerSettings.addEventListener("change", function () {
-        const [white, black] = playerSettings.value.split("-");
-        console.assert(white === "human" || white == "computer");
-        console.assert(black === "human" || black == "computer");
-        mainBoard.playerConfiguration.white = white;
-        mainBoard.playerConfiguration.black = black;
-        if (mainBoard.playerConfiguration[wasm.getSideToMove()] === "computer") {
-            mainBoard.scheduleComputerMove();
-        }
-    });
 
     const fenInput = document.getElementById("fen");
     fenInput.addEventListener("change", function () {
@@ -327,3 +375,9 @@ window.onload = function () {
         });
     });
 };
+
+function restartMainBoard() {
+    wasm.restartBoard();
+    mainBoard.syncToWasm();
+    mainBoard.scheduleMove();
+}
